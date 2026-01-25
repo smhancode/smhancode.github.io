@@ -1,3 +1,3 @@
-[test](annoTest.html)
+[to jspsych experiment](annoTest.html)
 
 yar
