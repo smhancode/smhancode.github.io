@@ -3,18 +3,23 @@
 <head>
     <title>annotation plugin testing page</title>
     <script src="jspsych/jspsych.js"></script>
-    <script src="jspsych/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych/plugin-annotation-tool.js"></script>
     <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
 </head>
 <body></body>
 <script>
     const jsPsych = initJsPsych();
 
-    const hello_trial = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: 'Hello world!'
-    }
+    const trial = {
+        type: jsPsychAnnotationTool,
+        dataset: [
+            {"id": 0, "text": "i am text 1."},
+            {"id": 1, "text": "i am text 2."},
+            {"id": 2, "text": "i am text 3."}
+        ],
+        labels: ["not ironic", "ironic"]
+    };
 
-    jsPsych.run([hello_trial]);
+    jsPsych.run([trial]);
 </script>
 </html>
