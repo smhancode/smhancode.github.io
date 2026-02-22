@@ -1,0 +1,44 @@
+name: Create PR from Annotation
+
+on:
+  workflow_dispatch:
+    inputs:
+      annotator: { required: true }
+      file_name: { required: true }
+      json_data: { required: true }
+      gh_code: { required: true }  # OAuth code from frontend
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Exchange OAuth code for token
+        id: token
+        run: |
+          TOKEN=$(curl -X POST -H "Accept: application/json" \
+            -u "${{ secrets.OAUTH_CLIENT_ID }}:${{ secrets.OAUTH_CLIENT_SECRET }}" \
+            https://github.com/login/oauth/access_token \
+            -d "code=${{ github.event.inputs.gh_code }}")
+          echo "TOKEN=$TOKEN" >> $GITHUB_ENV
+
+      - name: Save JSON
+        run: |
+          FILE="annotations/${{ github.event.inputs.file_name }}.json"
+          echo '${{ github.event.inputs.json_data }}' > $FILE
+          git config user.name "Annotation Bot"
+          git config user.email "bot@example.com"
+          git checkout -b annotation-${{ github.event.inputs.annotator }}
+          git add $FILE
+          git commit -m "Add annotations from ${{ github.event.inputs.annotator }}"
+          git push origin HEAD
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ env.TOKEN }}
+          title: "Annotations from ${{ github.event.inputs.annotator }}"
+          body: "This PR contains new annotations."
+          base: main
