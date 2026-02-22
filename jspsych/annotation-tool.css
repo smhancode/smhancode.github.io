@@ -1,0 +1,234 @@
+#jspsych-annotation-tool-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 43px;
+    z-index: 1000;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    background-color: #e0e0e0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.toolbar-section.left,
+.toolbar-section.right {
+    display: flex;
+    align-items: center;
+}
+
+.toolbar-section.right {
+    margin-left: auto; /* pushes it to the right */
+}
+
+#jspsych-annotation-tool-toolbar button {
+    height: 100%;
+    border: none;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    color: #808080;
+    cursor: pointer;
+}
+
+#jspsych-annotation-tool-toolbar button:not(:disabled):hover {
+    background: #eeeeee;
+}
+
+#jspsych-annotation-tool-toolbar button:disabled {
+    color: #bababa;
+}
+
+/* all items */
+#jspsych-annotation-tool-all-items {
+    position: fixed;
+    top: 5%;
+    left: 0;
+    width: 25%;
+    bottom: 0;
+    border-right: 1px solid #dddddd;
+    overflow-y: auto;
+    z-index: 900;
+    padding: 10px;
+}
+
+#jspsych-annotation-tool-all-items button {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 5px;
+    padding: 5px;
+    border: 1px solid #dddddd;
+    background-color: #fafafa;
+    text-align: left;
+    cursor: pointer;
+}
+
+.jspsych-annotation-tool-item-from-all-text {
+    white-space: pre-wrap;
+    margin-bottom: 2px;
+}
+
+.jspsych-annotation-tool-item-from-all-metadata {
+    font-size: x-small;
+    color: #666666;
+}
+
+#jspsych-annotation-tool-all-items button.is-selected {
+    border: 2px solid #beeaf9;
+    background-color: #3ec0ed;
+    color: white;
+}
+
+#jspsych-annotation-tool-all-items button:hover {
+    background-color: #eeeeee;
+}
+
+/* popup */
+#jspsych-annotation-tool-popup-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.3);
+}
+
+#jspsych-annotation-tool-popup-box {
+    background: white;
+    padding: 20px;
+    max-width: 700px;
+    width: 80%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 6px;
+}
+
+#jspsych-annotation-tool-popup-title {
+    font-weight: bold;
+    text-align: left;
+}
+
+#jspsych-annotation-tool-popup-text {
+    margin: 5px;
+    white-space: pre-wrap;
+    text-align: left;
+}
+
+/* progress */
+#jspsych-annotation-tool-progress-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    align-self: center;
+    width: 300px;
+    height: 24px;
+    border: 1px solid #cccccc;
+    border-radius: 12px;
+    background-color: #fafafa;
+    overflow: hidden;
+}
+
+#jspsych-annotation-tool-progress-container progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    background: none;
+}
+
+#jspsych-annotation-tool-progress-container progress::-webkit-progress-value {
+    background-color: #3ec0ed;
+    border-radius: 12px;
+}
+
+#jspsych-annotation-tool-progress-container progress::-moz-progress-bar {
+    background-color: #3ec0ed;
+    border-radius: 12px;
+}
+
+#jspsych-annotation-tool-progress-container span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    font-size: small;
+}
+
+/* rapid mode */
+.rapid-mode-button.active icon {
+    color: #3ec0ed;
+}
+
+/* labels */
+#jspsych-annotation-tool-labels-container {
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: white;
+    z-index: 950;
+    width: max-content;
+    max-width: 90%;
+    border-radius: 10px;
+}
+
+.jspsych-annotation-tool-label-button {
+    padding: 6px 14px;
+    border: 1px solid #ccc;
+    background: #f3f3f3;
+    cursor: pointer;
+    border-radius: 999px;
+    font-size: 14px;
+    transition: all 0.15s ease;
+}
+
+.jspsych-annotation-tool-label-button:hover {
+    background: #eeeeee;
+}
+
+.jspsych-annotation-tool-label-button.is-selected {
+    background: #3ec0ed;
+    color: white;
+    border-color: #beeaf9;
+    font-weight: 600;
+}
+
+/* item */
+#jspsych-annotation-tool-item-container {
+    width: 80%;
+    margin: auto;
+}
+
+#jspsych-annotation-tool-item {
+    white-space: pre-wrap;
+    text-align: left;
+}
+
+#jspsych-annotation-tool-metadata {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #666666;
+    opacity: 0.8;
+}
