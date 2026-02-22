@@ -10,7 +10,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       // user can use provided css as is, modify it, or use own css
       stylesheet: {
         type: jspsych.ParameterType.STRING,
-        default: "jspsych/annotation-tool.css"
+        default: "../src/annotation-tool.css"
       },
       dataset: {
         type: jspsych.ParameterType.OBJECT,
@@ -248,8 +248,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
           {
             method: "POST",
             headers: {
-              Accept: "application/vnd.github+json",
-              "Content-Type": "application/json"
+              Accept: "application/vnd.github+json"
             },
             body: JSON.stringify({
               ref: "main",
@@ -262,8 +261,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
         );
         if (!response.ok) {
           const text = await response.text();
-          console.error(text);
-          throw new Error("Failed to trigger workflow");
+          throw new Error(text);
         }
       }
       const save_button = document.createElement("button");
@@ -272,7 +270,15 @@ var jsPsychAnnotationTool = (function (jspsych) {
       save_button.appendChild(save_icon);
       save_button.addEventListener("click", () => {
         this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
-        saveAnnotations(labelled_dataset, "example person");
+        try {
+          async () => {
+            await saveAnnotations(labelled_dataset, "example person");
+          };
+          alert("Saved!");
+        } catch (err) {
+          console.error(err);
+          alert("Save failed");
+        }
       });
       toolbar_right.appendChild(save_button);
       const labels_container = document.createElement("div");
@@ -334,7 +340,6 @@ var jsPsychAnnotationTool = (function (jspsych) {
           if (element && (element.tagName === "INPUT" || element.tagName === "TEXTAREA" || element.isContentEditable)) {
             return;
           }
-          trial.keyboard_shortcuts;
           if (info2.key === keyboard_shortcuts.all_items) {
             all_items_button.click();
           }
