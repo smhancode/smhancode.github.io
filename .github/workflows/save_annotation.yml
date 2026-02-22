@@ -18,26 +18,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate GitHub App token
-        id: app-token
-        uses: tibdex/github-app-token@v2
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
-
       - name: Save file
-        env:
-          TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          DATE=$(date +%F)
-          FILE="annotations/${DATE}_${{ github.event.inputs.annotator_name }}.json"
-
           mkdir -p annotations
-          echo '${{ github.event.inputs.json_content }}' > "$FILE"
+          echo '${{ github.event.inputs.json_content }}' > annotations/${{ github.event.inputs.annotator_name }}-$(date +%s).json
 
+      - name: Commit
+        run: |
           git config user.name "annotation-bot"
-          git config user.email "annotation-bot@users.noreply.github.com"
-
-          git add "$FILE"
-          git commit -m "Add annotation from ${{ github.event.inputs.annotator_name }}"
-          git push https://x-access-token:$TOKEN@github.com/${{ github.repository }}.git
+          git config user.email "bot@users.noreply.github.com"
+          git add .
+          git commit -m "Add annotation"
+          git push
