@@ -170,7 +170,12 @@ var jsPsychAnnotationTool = (function (jspsych) {
       toolbar_left.appendChild(guidelines_button);
       const keyboard_shortcuts = trial.keyboard_shortcuts;
       function generate_shortcuts_table(keyboard_shortcuts2, labels) {
-        const key_rows = Object.entries(keyboard_shortcuts2).filter(([action_name]) => action_name !== "labels").map(([action_name, keyboard_key]) => `<tr><td class="key">${keyboard_key}</td><td>${action_name.replace(/_/g, " ")}</td></tr>`).join("");
+        const key_rows = Object.entries(keyboard_shortcuts2).filter(([action_name]) => action_name !== "labels").map(
+          ([action_name, keyboard_key]) => `<tr><td class="key">${keyboard_key}</td><td>${action_name.replace(
+          /_/g,
+          " "
+        )}</td></tr>`
+        ).join("");
         const label_rows = keyboard_shortcuts2.labels.map((keyboard_key, label_index) => {
           const label_name = labels[label_index];
           if (!label_name) {
@@ -242,41 +247,22 @@ var jsPsychAnnotationTool = (function (jspsych) {
         }
       });
       toolbar_right.appendChild(next_button);
-      async function saveAnnotations(jsonData, annotatorName) {
-        const response = await fetch(
-          "https://api.github.com/repos/smhancode/smhancode.github.io/actions/workflows/save_annotation.yml/dispatches",
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/vnd.github+json"
-            },
-            body: JSON.stringify({
-              ref: "main",
-              inputs: {
-                json_content: JSON.stringify(jsonData),
-                annotator_name: annotatorName
-              }
-            })
-          }
-        );
-        if (!response.ok) {
-          const text = await response.text();
-          throw new Error(text);
-        }
-      }
       const save_button = document.createElement("button");
       const save_icon = document.createElement("icon");
       save_icon.className = "fa fa-save fa-fw fa-lg";
       save_button.appendChild(save_icon);
       save_button.addEventListener("click", async () => {
         this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
-        try {
-          await saveAnnotations(labelled_dataset, "example person");
-          alert("Saved!");
-        } catch (err) {
-          console.error(err);
-          alert("Save failed");
-        }
+        const trial_data = {
+          annotator: "example annotator",
+          labelled_dataset
+        };
+        const blob = new Blob([JSON.stringify([trial_data], null, 2)], { type: "application/json" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${trial_data.annotator}.json`;
+        link.click();
+        this.jsPsych.finishTrial(trial_data);
       });
       toolbar_right.appendChild(save_button);
       const labels_container = document.createElement("div");
