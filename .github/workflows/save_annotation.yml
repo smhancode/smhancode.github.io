@@ -1,44 +1,43 @@
-name: Save Annotation
+name: Save annotation
 
 on:
   workflow_dispatch:
     inputs:
       json_content:
-        description: 'Annotation JSON content'
         required: true
       annotator_name:
-        description: 'Annotator name'
         required: true
 
 jobs:
-  create_pr:
+  save:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up GitHub App authentication
-        uses: tibdex/github-app-token@v1
+      - name: Generate GitHub App token
+        id: app-token
+        uses: tibdex/github-app-token@v2
         with:
-          app_id: ${{ secrets.GITHUB_APP_ID }}
-          private_key: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
-          installation_id: ${{ secrets.GITHUB_APP_INSTALLATION_ID }}
-        id: auth
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - name: Create branch and commit
+      - name: Save file
+        env:
+          TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           DATE=$(date +%F)
-          FILENAME="${DATE}_${{ github.event.inputs.annotator_name }}.json"
-          echo "${{ github.event.inputs.json_content }}" > $FILENAME
-          git config --global user.name "Annotation Bot"
-          git config --global user.email "actions@github.com"
-          git checkout -b "annotations/${FILENAME}"
-          git add $FILENAME
-          git commit -m "Add annotation file $FILENAME"
-          git push origin HEAD
-      - name: Create pull request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          branch: "annotations/${DATE}_${{ github.event.inputs.annotator_name }}"
-          title: "Annotation by ${{ github.event.inputs.annotator_name }} on $DATE"
-          body: "Automatically created annotation PR."
+          FILE="annotations/${DATE}_${{ github.event.inputs.annotator_name }}.json"
+
+          mkdir -p annotations
+          echo '${{ github.event.inputs.json_content }}' > "$FILE"
+
+          git config user.name "annotation-bot"
+          git config user.email "annotation-bot@users.noreply.github.com"
+
+          git add "$FILE"
+          git commit -m "Add annotation from ${{ github.event.inputs.annotator_name }}"
+          git push https://x-access-token:$TOKEN@github.com/${{ github.repository }}.git
