@@ -10,7 +10,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       // user can use provided css as is, modify it, or use own css
       stylesheet: {
         type: jspsych.ParameterType.STRING,
-        default: "/src/annotation-tool.css"
+        default: "../src/annotation-tool.css"
       },
       dataset: {
         type: jspsych.ParameterType.OBJECT,
@@ -251,7 +251,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       const save_icon = document.createElement("icon");
       save_icon.className = "fa fa-save fa-fw fa-lg";
       save_button.appendChild(save_icon);
-      save_button.addEventListener("click", async () => {
+      save_button.addEventListener("click", () => {
         this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
         const trial_data = {
           annotator: "example annotator",
