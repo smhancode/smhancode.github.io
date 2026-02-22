@@ -10,7 +10,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       // user can use provided css as is, modify it, or use own css
       stylesheet: {
         type: jspsych.ParameterType.STRING,
-        default: "jspsych/annotation-tool.css"
+        default: "/jspsych/annotation-tool.css"
       },
       dataset: {
         type: jspsych.ParameterType.OBJECT,
