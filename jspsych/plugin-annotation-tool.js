@@ -268,12 +268,10 @@ var jsPsychAnnotationTool = (function (jspsych) {
       const save_icon = document.createElement("icon");
       save_icon.className = "fa fa-save fa-fw fa-lg";
       save_button.appendChild(save_icon);
-      save_button.addEventListener("click", () => {
+      save_button.addEventListener("click", async () => {
         this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
         try {
-          async () => {
-            await saveAnnotations(labelled_dataset, "example person");
-          };
+          await saveAnnotations(labelled_dataset, "example person");
           alert("Saved!");
         } catch (err) {
           console.error(err);
