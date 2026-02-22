@@ -10,7 +10,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       // user can use provided css as is, modify it, or use own css
       stylesheet: {
         type: jspsych.ParameterType.STRING,
-        default: "src/annotation-tool.css"
+        default: "../src/annotation-tool.css"
       },
       dataset: {
         type: jspsych.ParameterType.OBJECT,
@@ -262,7 +262,6 @@ var jsPsychAnnotationTool = (function (jspsych) {
         link.href = URL.createObjectURL(blob);
         link.download = `${trial_data.annotator}.json`;
         link.click();
-        this.jsPsych.finishTrial(trial_data);
       });
       toolbar_right.appendChild(save_button);
       const labels_container = document.createElement("div");
