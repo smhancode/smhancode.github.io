@@ -253,15 +253,6 @@ var jsPsychAnnotationTool = (function (jspsych) {
       save_button.appendChild(save_icon);
       save_button.addEventListener("click", () => {
         this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
-        const trial_data = {
-          annotator: "example annotator",
-          labelled_dataset
-        };
-        const blob = new Blob([JSON.stringify([trial_data], null, 2)], { type: "application/json" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `${trial_data.annotator}.json`;
-        link.click();
       });
       toolbar_right.appendChild(save_button);
       const labels_container = document.createElement("div");
