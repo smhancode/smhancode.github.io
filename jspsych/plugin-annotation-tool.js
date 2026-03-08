@@ -260,10 +260,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       function enable_shortcut_save() {
         const save_btn = document.getElementById("save-shortcuts-button");
         save_btn?.addEventListener("click", () => {
-          localStorage.setItem(
-            "local_keyboard_shortcuts",
-            JSON.stringify(keyboard_shortcuts)
-          );
+          localStorage.setItem("local_keyboard_shortcuts", JSON.stringify(keyboard_shortcuts));
           const originalText = save_btn.textContent;
           save_btn.textContent = "saved!";
           setTimeout(() => {
@@ -334,12 +331,15 @@ var jsPsychAnnotationTool = (function (jspsych) {
       save_icon.className = "fa fa-save fa-fw fa-lg";
       save_button.appendChild(save_icon);
       save_button.addEventListener("click", () => {
-        show_popup("Save to GitHub", `<label for="name">Name:</label>
-<input id="name" name="name">
-<label for="token">Token:</label>
-<input type="password" id="token" name="token">
+        show_popup(
+          "Save to GitHub",
+          `<label for="annotator-name">Name:</label>
+<input id="annotator-name" name="annotator-name">
+<label for="github-token">Token:</label>
+<input type="password" id="github-token" name="github-token">
 <button id="save-and-continue">save and continue</button>
-<button id="save-and-end">save and end</button>`);
+<button id="save-and-end">save and end</button>`
+        );
         async function save_to_github(end_after) {
           const token_input = document.getElementById("github-token");
           const name_input = document.getElementById("annotator-name");
@@ -459,11 +459,11 @@ var jsPsychAnnotationTool = (function (jspsych) {
             popup_container.click();
             return;
           }
-          if (popup_container.style.display !== "none") {
-            return;
-          }
           const element = document.activeElement;
           if (element && (element.tagName === "INPUT" || element.tagName === "TEXTAREA" || element.isContentEditable)) {
+            return;
+          }
+          if (popup_container.style.display !== "none") {
             return;
           }
           if (info2.key === keyboard_shortcuts.all_items) {
