@@ -456,36 +456,35 @@ var jsPsychAnnotationTool = (function (jspsych) {
       this.jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: (info2) => {
           const element = document.activeElement;
-          if (element && (element.tagName === "INPUT" || element.tagName === "TEXTAREA" || element.isContentEditable)) {
+          if (element && (element.tagName === "INPUT" || element.tagName === "TEXTAREA" || element.isContentEditable) || popup_container.style.display !== "none") {
             return;
           }
           if (info2.key === "Escape" && popup_container.style.display !== "none") {
             popup_container.click();
             return;
           }
-          if (popup_container.style.display !== "none") {
-            return;
-          }
-          if (info2.key === keyboard_shortcuts.all_items) {
-            all_items_button.click();
-          }
-          if (info2.key === keyboard_shortcuts.guidelines) {
-            guidelines_button.click();
-          }
-          if (info2.key === keyboard_shortcuts.keyboard_shortcuts) {
-            keyboard_shortcuts_button.click();
-          }
-          if (info2.key === keyboard_shortcuts.rapid_mode) {
-            rapid_mode_button.click();
-          }
-          if (info2.key === keyboard_shortcuts.prev) {
-            prev_button.click();
-          }
-          if (info2.key === keyboard_shortcuts.next) {
-            next_button.click();
-          }
-          if (info2.key === keyboard_shortcuts.save) {
-            save_button.click();
+          switch (info2.key) {
+            case keyboard_shortcuts.all_items:
+              all_items_button.click();
+              break;
+            case keyboard_shortcuts.guidelines:
+              guidelines_button.click();
+              break;
+            case keyboard_shortcuts.keyboard_shortcuts:
+              keyboard_shortcuts_button.click();
+              break;
+            case keyboard_shortcuts.rapid_mode:
+              rapid_mode_button.click();
+              break;
+            case keyboard_shortcuts.prev:
+              prev_button.click();
+              break;
+            case keyboard_shortcuts.next:
+              next_button.click();
+              break;
+            case keyboard_shortcuts.save:
+              save_button.click();
+              break;
           }
           const label_index = keyboard_shortcuts.labels.indexOf(info2.key);
           if (label_index !== -1 && label_index < label_buttons.length) {
@@ -498,16 +497,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
             }
           }
         },
-        valid_responses: [
-          keyboard_shortcuts.all_items,
-          keyboard_shortcuts.guidelines,
-          keyboard_shortcuts.keyboard_shortcuts,
-          keyboard_shortcuts.rapid_mode,
-          keyboard_shortcuts.prev,
-          keyboard_shortcuts.next,
-          keyboard_shortcuts.save,
-          ...keyboard_shortcuts.labels
-        ],
+        valid_responses: "ALL_KEYS",
         persist: true,
         allow_held_key: false
       });
