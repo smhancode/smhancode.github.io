@@ -453,6 +453,12 @@ var jsPsychAnnotationTool = (function (jspsych) {
         update_progress();
         update_all_items_highlight();
       }
+      while (popup_container.style.display !== "none") {
+        const element = document.activeElement;
+        if (element && (element.tagName === "INPUT" || element.tagName === "TEXTAREA" || element.isContentEditable) || popup_container.style.display !== "none") {
+          return;
+        }
+      }
       this.jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: (info2) => {
           const element = document.activeElement;
