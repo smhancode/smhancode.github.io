@@ -453,8 +453,10 @@ var jsPsychAnnotationTool = (function (jspsych) {
         update_progress();
         update_all_items_highlight();
       }
+      const jsPsych = this.jsPsych;
+      let keyboardListener = null;
       function startKeyboardShortcuts() {
-        this.jsPsych.pluginAPI.getKeyboardResponse({
+        keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
           callback_function: (info2) => {
             const element = document.activeElement;
             if (element && (element.tagName === "INPUT" || element.tagName === "TEXTAREA" || element.isContentEditable) || popup_container.style.display !== "none") {
@@ -507,7 +509,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       display_element.addEventListener("focusin", (e) => {
         const el = e.target;
         if (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable) {
-          this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
+          this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
         }
       });
       display_element.addEventListener("focusout", (e) => {
