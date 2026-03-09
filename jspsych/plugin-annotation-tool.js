@@ -503,6 +503,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
           allow_held_key: false
         });
       }
+      startKeyboardShortcuts();
       display_element.addEventListener("focusin", (e) => {
         const el = e.target;
         if (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable) {
