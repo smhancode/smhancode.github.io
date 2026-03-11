@@ -464,7 +464,11 @@ var jsPsychAnnotationTool = (function (jspsych) {
          <button id="save-and-end">save and end</button>
          </div>`
         );
+        const saveAndContinue = document.getElementById("save-and-continue");
+        const saveAndEnd = document.getElementById("save-and-end");
         async function saveToGitHub(endAfter) {
+          saveAndContinue.disabled = true;
+          saveAndEnd.disabled = true;
           const tokenInput = document.getElementById("token");
           const nameInput = document.getElementById("annotatorName");
           const token = tokenInput?.value.trim();
@@ -510,6 +514,8 @@ var jsPsychAnnotationTool = (function (jspsych) {
               const errorText = await response.text();
               throw new Error(errorText);
             }
+            saveAndContinue.disabled = false;
+            saveAndEnd.disabled = false;
             const successMsg = endAfter ? "Annotations successfully saved to GitHub. Quitting. Reload to reopen." : "Annotations successfully saved to GitHub. You may continue annotating.";
             alert(successMsg);
             if (endAfter) {
@@ -518,17 +524,17 @@ var jsPsychAnnotationTool = (function (jspsych) {
             }
           } catch (error) {
             console.error(error);
+            saveAndContinue.disabled = false;
+            saveAndEnd.disabled = false;
             alert(
               "Failed to save annotations to GitHub. Check your input. Check console for details."
             );
           }
         }
-        const saveAndContinue = document.getElementById("save-and-continue");
-        saveAndContinue?.addEventListener("click", async () => {
+        saveAndContinue.addEventListener("click", async () => {
           await saveToGitHub(false);
         });
-        const saveAndEnd = document.getElementById("save-and-end");
-        saveAndEnd?.addEventListener("click", async () => {
+        saveAndEnd.addEventListener("click", async () => {
           await saveToGitHub(true);
         });
       });
