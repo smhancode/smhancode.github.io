@@ -10,11 +10,11 @@ var jsPsychAnnotationTool = (function (jspsych) {
       /**
        * stylesheet
        * use default as is, modify it, or use own stylesheet
-       * must be in jspsych/
+       * preferably in jspsych/
        */
       stylesheet: {
         type: jspsych.ParameterType.STRING,
-        default: "annotation-tool.css"
+        default: "jspsych/annotation-tool.css"
       },
       /**
        * dataset to annotate, as JSON array
@@ -93,8 +93,6 @@ var jsPsychAnnotationTool = (function (jspsych) {
         type: jspsych.ParameterType.STRING,
         default: void 0
       },
-      /* use default github actions file, modify it, or use own file
-         must be in .github/workflows/ */
       /**
        * github actions file, for saving to github
        * default:
@@ -141,7 +139,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       document.head.appendChild(faLink);
       const stylesheetLink = document.createElement("link");
       stylesheetLink.rel = "stylesheet";
-      stylesheetLink.href = "jspsych/" + trial.stylesheet.trim();
+      stylesheetLink.href = trial.stylesheet.trim();
       document.head.appendChild(stylesheetLink);
       const owner = (trial.owner ?? "").toLowerCase().trim();
       const repoRaw = (trial.repo ?? "").toLowerCase().trim();
@@ -170,9 +168,17 @@ var jsPsychAnnotationTool = (function (jspsych) {
       dialog.appendChild(dialogBody);
       function showDialog(title, text) {
         dialogTitle.textContent = title;
-        dialogBody.innerHTML = text;
+        dialogBody.innerHTML = `
+      ${text}
+      <p class="jspsych-annotation-tool-dialog-note">Press Escape to close.</p>
+      `;
         if (!dialog.open) {
           dialog.showModal();
+          dialog.setAttribute("tabindex", "-1");
+          dialog.focus();
+          dialog.blur();
+          const firstFocusedElem = dialog.querySelector("input, button, textarea");
+          firstFocusedElem?.blur();
         }
       }
       const toolbar = document.createElement("div");
@@ -208,7 +214,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       });
       const allItemsButton = document.createElement("button");
       const allItemsIcon = document.createElement("i");
-      allItemsIcon.className = "fa fa-bars fa-fw fa-lg";
+      allItemsIcon.className = "fa fa-bars fa-fw";
       allItemsButton.addEventListener("click", () => {
         if (allItemsContainer.style.display === "none") {
           allItemsContainer.style.display = "block";
@@ -220,7 +226,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       toolbarL.appendChild(allItemsButton);
       const guidelinesButton = document.createElement("button");
       const guidelinesIcon = document.createElement("i");
-      guidelinesIcon.className = "fa fa-book fa-fw fa-lg";
+      guidelinesIcon.className = "fa fa-book fa-fw";
       guidelinesButton.appendChild(guidelinesIcon);
       guidelinesButton.addEventListener("click", () => {
         showDialog("Guidelines", trial.guidelines ?? "No guidelines provided.");
@@ -231,6 +237,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       Object.entries(keyboardShortcuts).forEach(([k, v]) => {
         if (k === "labels") {
           keyboardShortcuts.labels = keyboardShortcuts.labels.map((x) => x.toLowerCase());
+          keyboardShortcuts.labels = keyboardShortcuts.labels.slice(0, trial.labels.length);
         } else {
           keyboardShortcuts[k] = v.toLowerCase();
         }
@@ -269,7 +276,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       </tr>`;
         });
         table += `</table>
-    <p>Click on a shortcut and press a new key. Changes are saved automatically.</p>`;
+    <p>Click on a shortcut and press a new key. Changes are saved automatically. Shortcuts are stored locally.</p>`;
         return table;
       }
       function keyUsed(key) {
@@ -305,6 +312,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
                   JSON.stringify(keyboardShortcuts)
                 );
               }
+              startKeyboardShortcuts();
               document.removeEventListener("keydown", keyboardListener2);
             };
             document.addEventListener("keydown", keyboardListener2, { once: true });
@@ -313,7 +321,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       }
       const keyboardShortcutsButton = document.createElement("button");
       const keyboardShortcutsIcon = document.createElement("i");
-      keyboardShortcutsIcon.className = "fa fa-keyboard-o fa-fw fa-lg";
+      keyboardShortcutsIcon.className = "fa fa-keyboard-o fa-fw";
       keyboardShortcutsButton.appendChild(keyboardShortcutsIcon);
       keyboardShortcutsButton.addEventListener("click", () => {
         showDialog("Keyboard shortcuts", makeShortcutsTable(keyboardShortcuts, trial.labels));
@@ -399,7 +407,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       const rapidModeButton = document.createElement("button");
       rapidModeButton.className = "rapid-mode-button";
       const rapidModeIcon = document.createElement("i");
-      rapidModeIcon.className = "fa fa-bolt fa-fw fa-lg";
+      rapidModeIcon.className = "fa fa-bolt fa-fw";
       rapidModeButton.appendChild(rapidModeIcon);
       if (trial.multi_labels) {
         rapidModeButton.disabled = true;
@@ -412,7 +420,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       toolbarR.appendChild(rapidModeButton);
       const prevButton = document.createElement("button");
       const prevIcon = document.createElement("i");
-      prevIcon.className = "fa fa-chevron-left fa-fw fa-lg";
+      prevIcon.className = "fa fa-chevron-left fa-fw";
       prevButton.appendChild(prevIcon);
       prevButton.disabled = curIdx === 0;
       prevButton.addEventListener("click", () => {
@@ -424,7 +432,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       toolbarR.appendChild(prevButton);
       const nextButton = document.createElement("button");
       const nextIcon = document.createElement("i");
-      nextIcon.className = "fa fa-chevron-right fa-fw fa-lg";
+      nextIcon.className = "fa fa-chevron-right fa-fw";
       nextButton.appendChild(nextIcon);
       nextButton.addEventListener("click", () => {
         if (curIdx < annotatedDataset.length - 1) {
@@ -435,18 +443,26 @@ var jsPsychAnnotationTool = (function (jspsych) {
       toolbarR.appendChild(nextButton);
       const saveButton = document.createElement("button");
       const saveIcon = document.createElement("i");
-      saveIcon.className = "fa fa-save fa-fw fa-lg";
+      saveIcon.className = "fa fa-save fa-fw";
       saveButton.appendChild(saveIcon);
       saveButton.addEventListener("click", () => {
         showDialog(
           "Save to GitHub",
-          `<label for="annotatorName">Name:</label>
+          `<div class="name-token-container">
+         <div class="row">
+         <label for="annotatorName">Name:</label>
          <input id="annotatorName" name="annotatorName" value="${localStorage.getItem(LOCAL_STORAGE_PREFIX + "AnnotatorName") ?? ""}">
+         </div>
+         <div class="row">
          <label for="token">Token:</label>
          <input type="password" id="token" name="token" value="${localStorage.getItem(LOCAL_STORAGE_PREFIX + "Token") ?? ""}">
-         <p>Annotator name and token are saved locally.</p>
+         </div>
+         </div>
+         <p>Name and token are saved locally.</p>
+         <div class="save-buttons">
          <button id="save-and-continue">save and continue</button>
-         <button id="save-and-end">save and end</button>`
+         <button id="save-and-end">save and end</button>
+         </div>`
         );
         async function saveToGitHub(endAfter) {
           const tokenInput = document.getElementById("token");
@@ -500,9 +516,11 @@ var jsPsychAnnotationTool = (function (jspsych) {
               jsPsych.pluginAPI.cancelAllKeyboardResponses();
               jsPsych.finishTrial(trialData);
             }
-          } catch (err) {
-            console.error(err);
-            alert("Failed to save annotations to GitHub. Check console for details.");
+          } catch (error) {
+            console.error(error);
+            alert(
+              "Failed to save annotations to GitHub. Check your input. Check console for details."
+            );
           }
         }
         const saveAndContinue = document.getElementById("save-and-continue");
@@ -576,7 +594,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
         });
         const numLabelledItems = annotatedDataset.filter((item2) => item2.label !== void 0).length;
         progressBar.value = numLabelledItems;
-        progressText.textContent = `${numLabelledItems} of ${annotatedDataset.length} labelled`;
+        progressText.textContent = `${numLabelledItems} of ${annotatedDataset.length} annotated`;
         itemButtons.forEach((itemButton, itemButtonIdx) => {
           if (itemButtonIdx === curIdx) {
             itemButton.classList.add("highlighted");
