@@ -53,8 +53,10 @@ jobs:
           TIME=$(date +'%H-%M-%S')
 
           FILE="annotations/${DATE}_${TIME}_${BRANCH}.json"
-
-          echo '${{ inputs.dataset }}' > "$FILE"
+          
+          cat <<'EOF' > "$FILE"
+          ${{ inputs.dataset }}
+          EOF
 
           echo "FILE=$FILE" >> $GITHUB_ENV
 
