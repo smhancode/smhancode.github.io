@@ -472,14 +472,13 @@ var jsPsychAnnotationTool = (function (jspsych) {
           const tokenInput = document.getElementById("token");
           const nameInput = document.getElementById("annotatorName");
           const token = tokenInput?.value.trim();
-          let annotator = nameInput?.value.trim();
+          let annotator = nameInput?.value.trim().toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/-+/g, "-");
           if (!token) {
             return alert("Please enter a GitHub token.");
           }
           if (!annotator) {
             return alert("Please enter an annotator name.");
           }
-          annotator = annotator.replace(/\s+/g, "-");
           localStorage.setItem(LOCAL_STORAGE_PREFIX + "AnnotatorName", annotator);
           localStorage.setItem(LOCAL_STORAGE_PREFIX + "Token", token);
           annotatedDataset.forEach((item) => {
