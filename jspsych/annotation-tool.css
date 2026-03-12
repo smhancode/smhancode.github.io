@@ -269,6 +269,10 @@
     border-radius: 0.75rem;
 }
 
+progress[value]::-webkit-progress-value {
+    background-color: #3ec0ed;
+}
+
 #jspsych-annotation-tool-progress-container span {
     position: absolute;
     inset: 0;
