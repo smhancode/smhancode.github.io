@@ -10,7 +10,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       /**
        * stylesheet
        * use default as is, modify it, or use own stylesheet
-       * preferably in jspsych/
+       * when using original stylesheet, have it in jspsych/
        */
       stylesheet: {
         type: jspsych.ParameterType.STRING,
@@ -293,7 +293,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
       </tr>`;
         });
         table += `</table>
-    <p>Click on a shortcut and press a new key. Changes are automatically saved locally.</p>`;
+    <p>Click on a shortcut and press a new key. Changes are saved automatically and locally.</p>`;
         return table;
       }
       function keyUsed(key) {
@@ -475,7 +475,9 @@ var jsPsychAnnotationTool = (function (jspsych) {
          <input type="password" id="token" name="token" value="${localStorage.getItem(LOCAL_STORAGE_PREFIX + "Token") ?? ""}">
          </div>
          </div>
-         <p>Name may only contain the letters A-Z, numbers, spaces, and hyphens (-). It must not start or end with a hyphen.</p>
+         <p>Name may only contain the letters A-Z, numbers, spaces, and hyphens (-).
+         It must not start or end with a hyphen.</p>
+         <p>Use the access token your organiser shared with you.</p>
          <p>Name and token are saved locally.</p>
          <div class="save-buttons">
          <button id="save-and-continue">save and continue</button>
@@ -510,7 +512,7 @@ var jsPsychAnnotationTool = (function (jspsych) {
           saveAndContinue.disabled = false;
           saveAndEnd.disabled = false;
           return alert(
-            "Name may only contain the letters A-Z, numbers, spaces, and hyphens (-).It must not start or end with a hyphen."
+            "Name may only contain the letters A-Z, numbers, spaces, and hyphens (-). It must not start or end with a hyphen."
           );
         }
         const annotatorBranch = annotatorRaw.toLowerCase().replace(/\s+/g, "-").replace(/-+/g, "-").replace(/^-+|-+$/g, "");
